@@ -22,17 +22,7 @@ def search(passport_id, job_title):
     дата рождения, дата трудоустройства, зарплатная метка, часы отгула по болезни
     """
     engine, connection = db_configs.mssql_config()
-    table = pd.read_sql_query(f"SELECT HumanResources.Employee.BusinessEntityID AS ID,"
-                           "HumanResources.Employee.NationalIDNumber AS PASSPORT, "
-                           "HumanResources.Employee.JobTitle AS POSITION, "
-                           "HumanResources.Employee.LoginID AS LOGIN_ID, "
-                           "CAST (HumanResources.Employee.BirthDate AS VARCHAR(50)) AS BITRHDAY, "
-                           "CAST (HumanResources.Employee.HireDate AS VARCHAR(50)) AS HIRE_DATE, "
-                           "CAST (HumanResources.Employee.SalariedFlag AS INT) AS SALARY_FLAG, "
-                           "HumanResources.Employee.SickLeaveHours AS TimeOff "
-                           "FROM HumanResources.Employee"
-                           f" WHERE HumanResources.Employee.NationalIDNumber LIKE '%{passport_id}%' "
-                           f"AND HumanResources.Employee.JobTitle LIKE '%{job_title}%'", connection)
+    table = pd.read_sql_query()
     json_records = table.reset_index().to_json(orient='records')
     arr = []
     arr = json.loads(json_records)

@@ -11,8 +11,10 @@ Manual:
 3) Если есть ошибка кодировки, то поменять на cp1251/utf-8  
 """
 
+
 def get_file_path(filename: str):
     return os.path.abspath(f'{filename}.txt')
+
 
 def leak_to_db(filename: str):
     """
@@ -26,3 +28,15 @@ def leak_to_db(filename: str):
     except:
         return "Execution error! Check manual"
 
+
+def get_table_names(engine):
+    """
+    :param engine: движок для подключения к базе данных (хранит все доступные имена таблиц)
+    :return: список имен таблиц
+    """
+    try:
+        inspector = inspect(engine)
+        table_names_list = inspector.get_table_names()
+        return table_names_list
+    except:
+        return "engine error! unable to get table names"
