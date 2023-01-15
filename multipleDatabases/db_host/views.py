@@ -14,12 +14,11 @@ def show_general_page(request):
     """
     return render(request, 'main_page.html')
 
-def search(passport_id, job_title):
+def search(passport_id, phone_number):
     """
-    :param passport_id: паспорт работника
-    :param job_title: занимаемая должность
-    :return: таблица с его id, паспорт, должность, логин в системе,
-    дата рождения, дата трудоустройства, зарплатная метка, часы отгула по болезни
+    :param passport_id: паспорт пользователя
+    :param phone_number: номер телефона
+    :return: все возможные данные из таблиц утечек
     """
     engine, connection = db_configs.mssql_config()
     table = pd.read_sql_query()
@@ -31,21 +30,21 @@ def search(passport_id, job_title):
 def execute_Search(request):
     try:
         if request.method == "POST":
-            job_title = request.POST.get("job_title")
+            phone = request.POST.get("phone")
             passport = request.POST.get("passport")
-            if job_title and passport:
-                answer = search(passport_id=passport, job_title=job_title)
-                return render(request, "main_page.html", {'data': answer, 'job_title': job_title, 'passport': passport})
+            if phone and passport:
+                answer = search(passport_id=passport, phone_number=phone)
+                return render(request, "main_page.html", {'data': answer, 'phone': phone, 'passport': passport})
             else:
                 data = {
-                    'job_title': job_title,
+                    'phone': phone,
                     'passport': passport,
                 }
                 messages.error(request, 'ничего не найдено')
                 return render(request, "main_page.html", data)
     except IntegrityError:
         data = {
-            'job_title': job_title,
+            'phone': phone,
             'passport': passport,
         }
         messages.error(request, 'ничего не найдено')

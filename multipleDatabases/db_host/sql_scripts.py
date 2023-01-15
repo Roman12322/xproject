@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine, inspect, text
 import db_configs
 import os
 
@@ -23,7 +23,7 @@ def leak_to_db(filename: str):
     try:
         engine, connection = db_configs.mssql_config()
         df = pd.read_csv(get_file_path(filename), encoding='cp1251', sep=';')
-        df_sql_version = df.to_sql(f'{filename} leak', connection, index=False)
+        df_sql_version = df.to_sql(f'{filename}_leak', connection, index=False)
         return 1
     except:
         return "Execution error! Check manual"
@@ -40,3 +40,24 @@ def get_table_names(engine):
         return table_names_list
     except:
         return "engine error! unable to get table names"
+
+
+def get_column_names(engine, table_name: str):
+    """
+    :param engine: движок для подключения к базе данных (хранит все доступные имена таблиц)
+    :param table_name: имя заданной таблицы
+    :return: возвращает список имен столбцов
+    """
+    tables = get_table_names(engine=engine)
+    for item_name in tables:
+        if item_name==table_name:
+            with engine.connect() as connection:
+                result = connection.execute(text(f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS"
+                                                       f" WHERE TABLE_NAME = '{item_name}'"
+                                                       f" ORDER BY ORDINAL_POSITION")).fetchall()
+                column_names = []
+                for item_1 in result:
+                    for item in item_1:
+                        column_names.append(item)
+                return column_names
+
