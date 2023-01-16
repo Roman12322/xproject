@@ -5,6 +5,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
 import pandas as pd
 from . import db_configs
+from . import sql_scripts
 import json
 
 
@@ -13,6 +14,14 @@ def show_general_page(request):
     Рендер главной страницы
     """
     return render(request, 'main_page.html')
+
+
+def show_upload_leak_file_form(request):
+    """
+    Рендер страницы для загрузки утечек в базу данных
+    """
+    return render(request, 'add_leaks_form.html')
+
 
 def search(passport_id, phone_number):
     """
@@ -26,6 +35,7 @@ def search(passport_id, phone_number):
     arr = []
     arr = json.loads(json_records)
     return arr
+
 
 def execute_Search(request):
     try:
@@ -49,3 +59,20 @@ def execute_Search(request):
         }
         messages.error(request, 'ничего не найдено')
         return render(request, "main_page.html", data)
+
+
+def upload_leak(request):
+    try:
+        if request.method == "POST":
+            leak_file = request.FILES["leak_file"]
+            answer = sql_scripts.leak_to_db(leak_file)
+            data = {
+                'ans': answer
+            }
+            return render(request, "add_leaks_form.html", data)
+    except IntegrityError:
+        data = {
+            'ans': answer
+        }
+        messages.error(request, 'ничего не найдено')
+        return render(request, "add_leaks_form.html", data)

@@ -1,10 +1,44 @@
-<!DOCTYPE html>
+{% load static %}
 <html lang="en">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="{% static 'db_host/css/add_leaks.css'%}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Add leak form</title>
 </head>
 <body>
+<div class="sidenav">
+         <div class="login-main-text">
+            <h2>There you can upload leak <br> file to database</h2>
+         </div>
+      </div>
+      <div class="main">
+         <div class="col-md-6 col-sm-12">
+            <div class="login-form">
+               <form action="upload_leak" method="POST" enctype="multipart/form-data">
+                   {% csrf_token %}
+                   <div class="form-group">
+                     <label>Загрузите файл с утечкой</label>
+                     <input type="file" name="leak_file" id="leak_file">
+                  </div>
+                   <div class="form-group">
+                     <label>Ответ о загрузке</label>
+                     <input type="text" name="ans" value="{{ans}}" id="ans">
+                  </div>
+                  <button type="submit" class="btn btn-secondary">Загрузить</button>
+                   {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <br {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</br>
+                {% endfor %}
+            </ul>
+                {% endif %}
+               </form>
+            </div>
+         </div>
+      </div>
 
 </body>
 </html>
