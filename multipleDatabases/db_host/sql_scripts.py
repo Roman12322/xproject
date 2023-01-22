@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy import inspect, text
-import  db_configs
+from . import db_configs
 import os
 """
 Manual:
@@ -19,18 +19,9 @@ def leak_to_db(file):
     """
     :return: создает таблицу в базе данных с заданной утечкой
     """
-    try:
-        engine, connection = db_configs.mssql_config()
-        tmp_file = open("new_leak.txt", "w")
-        decoded_file = file.read().decode('cp1251')
-        for row in decoded_file:
-            tmp_file.write(row)
-        df = pd.read_csv(get_file_path("new_leak.txt"), encoding='cp1251', sep=';')
-        df_sql_version = df.to_sql(f'{file}_leak', connection, index=False)
-        os.remove("new_leak.txt")
-        return "Successfully uploaded"
-    except:
-        return "Execution error"
+    engine, connection = db_configs.mssql_config()
+    df = pd.read_csv(get_file_path(file.temprorary_file_path()), encoding='cp1251', sep=';', low_memory=False)
+    df_sql_version = df.to_sql(f'{file}_leak', connection, index=False)
 
 
 def get_table_names(engine):

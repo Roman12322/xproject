@@ -65,11 +65,21 @@ def upload_leak(request):
     try:
         if request.method == "POST":
             leak_file = request.FILES["leak_file"]
-            answer = sql_scripts.leak_to_db(leak_file)
-            data = {
-                'ans': answer
-            }
-            return render(request, "add_leaks_form.html", data)
+            try:
+                engine, connection = db_configs.mssql_config()
+                df = pd.read_csv(request.FILES['leak_file'].temporary_file_path(), sep=';', encoding='UTF-8')
+                df_sql_version = df.to_sql(f'{leak_file.name}_leak', connection, index=False)
+                answer = 'Successfully updated to database'
+                data = {
+                    'ans': answer
+                }
+                return render(request, "add_leaks_form.html", data)
+            except:
+                answer = 'Please, change file-encoding to UTF-8'
+                data = {
+                    'ans': answer
+                }
+                return render(request, "add_leaks_form.html", data)
     except IntegrityError:
         data = {
             'ans': answer
