@@ -17,7 +17,7 @@ def mssql_config():
     PASSWORD = '2002'
     DRIVER = 'ODBC Driver 17 for SQL Server'
     DATABASE = 'leaks'
-    SERVER = 'HEEN'
+    SERVER = 'APACHE'
     connection_URL = f"{HOST_NAME}://{USER}:{PASSWORD}@{SERVER}/{DATABASE}?driver={DRIVER}"
     mssql_engine = create_engine(connection_URL)
     mssql_connection = mssql_engine.connect()

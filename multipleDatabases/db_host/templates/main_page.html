@@ -23,7 +23,7 @@
                    <div class="form-group">
                      <label>Введите паспортные данные</label>
                      <input type="text" value="{{passport}}" id="passport" name="passport" class="form-control" placeholder="Серия и номер паспорта">
-                  </div>
+                   </div>
                    <div class="form-group">
                      <label>Введите номер телефона</label>
                      <input type="text" value="{{phone}}" id="phone" name="phone" class="form-control" placeholder="Номер телефона: ">
@@ -36,23 +36,7 @@
                     <br {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</br>
                 {% endfor %}
             </ul>
-                {% endif %}
-                {% if data %}
-                          <div>
-                          <div id="positionTable">
-                          <h2 id="table_header">Найденные пользователи</h2>
-                            <table>
-                                <tr><th>ID</th><th>PASSPORT</th><th>POSITION</th><th>LOGIN_ID</th>
-                                    <th>BITRHDAY</th><th>HIRE_DATE</th><th>SALARY_FLAG</th><th>TimeOff</th></tr>
-                                {% for user in data %}
-                                    <tr><td>{{ user.ID }}</td><td>{{ user.PASSPORT }}</td><td>{{ user.POSITION }}</td>
-                                    <td>{{ user.LOGIN_ID }}</td><td>{{ user.BITRHDAY }}</td><td>{{ user.HIRE_DATE }}</td>
-                                    <td>{{ user.SALARY_FLAG }}</td><td>{{ user.TimeOff }}</td></tr>
-                                {% endfor %}
-                            </table>
-                           </div>
-                          {% endif %}
-                          </div>
+                   {%endif%}
                </form>
             </div>
          </div>

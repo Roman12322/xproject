@@ -57,3 +57,13 @@ def get_column_names(engine, table_name: str):
                 return column_names
 
 
+def get_table_info():
+    table_cols_dict = {}
+    engine, connection = db_configs.mssql_config()
+    tables_list = get_table_names(engine=engine)
+    for table in tables_list:
+        cols = get_column_names(engine, table)
+        table_cols_dict[table] = cols
+    return table_cols_dict
+
+

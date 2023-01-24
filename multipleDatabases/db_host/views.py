@@ -23,39 +23,39 @@ def show_upload_leak_file_form(request):
     return render(request, 'add_leaks_form.html')
 
 
-def search(passport_id, phone_number):
+def search(phone_number):
     """
-    :param passport_id: паспорт пользователя
     :param phone_number: номер телефона
-    :return: все возможные данные из таблиц утечек
+    :return: все возможные данные о пользователе по заданному номеру телефона
     """
     engine, connection = db_configs.mssql_config()
-    table = pd.read_sql_query()
-    json_records = table.reset_index().to_json(orient='records')
-    arr = []
-    arr = json.loads(json_records)
-    return arr
-
-
+    file = open("user_info.txt", 'w')
+    tables_name = sql_scripts.get_table_names(engine=engine)
+    for name in tables_name:
+        info_about_user = pd.read_sql_query(f"""SELECT * from [{name}]
+                                             WHERE phone_number LIKE '{phone_number}%'""", connection)
+        if info_about_user is not None:
+            file.write(f"В таблице: {name} найдена следующая информация\n"
+                       f" Персональные данные пользовател(я/ей) с номером телефона похожим на: {phone_number}\n"
+                       f" {info_about_user}")
+    return file
 def execute_Search(request):
     try:
         if request.method == "POST":
             phone = request.POST.get("phone")
             passport = request.POST.get("passport")
-            if phone and passport:
-                answer = search(passport_id=passport, phone_number=phone)
-                return render(request, "main_page.html", {'data': answer, 'phone': phone, 'passport': passport})
+            if phone:
+                answer = search(phone_number=phone)
+                return render(request, "main_page.html", {'phone': phone})
             else:
                 data = {
                     'phone': phone,
-                    'passport': passport,
                 }
                 messages.error(request, 'ничего не найдено')
                 return render(request, "main_page.html", data)
     except IntegrityError:
         data = {
             'phone': phone,
-            'passport': passport,
         }
         messages.error(request, 'ничего не найдено')
         return render(request, "main_page.html", data)
