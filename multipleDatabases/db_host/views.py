@@ -33,9 +33,9 @@ def search(phone_number):
     tables_name = sql_scripts.get_table_names(engine=engine)
     for name in tables_name:
         info_about_user = pd.read_sql_query(f"""SELECT * from [{name}]
-                                             WHERE phone_number LIKE '{phone_number}%'""", connection)
+                                             WHERE phone_number LIKE '{phone_number}%'""", connection).to_string()
         if info_about_user is not None:
-            file.write(f"В таблице: {name} найдена следующая информация\n"
+            file.write(f"\nВ таблице: {name} найдена следующая информация\n"
                        f" Персональные данные пользовател(я/ей) с номером телефона похожим на: {phone_number}\n"
                        f" {info_about_user}")
     return file
